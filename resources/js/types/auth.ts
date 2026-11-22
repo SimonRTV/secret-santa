@@ -1,0 +1,39 @@
+export type User = {
+    id: number;
+    name: string;
+    email: string;
+    avatar?: string;
+    email_verified_at: string | null;
+    appearance: 'light' | 'dark' | 'system';
+    admin_theme: 'neutral' | 'ocean' | 'forest';
+    two_factor_enabled?: boolean;
+    created_at: string;
+    updated_at: string;
+    [key: string]: unknown;
+};
+
+export type Auth = {
+    user: User;
+    can: {
+        managePages: boolean;
+        viewActivity: boolean;
+        manageMedia: boolean;
+        manageUsers: boolean;
+        manageRoles: boolean;
+        manageApplicationSettings: boolean;
+    };
+};
+
+export type Passkey = {
+    id: number;
+    name: string;
+    authenticator: string | null;
+    created_at_diff: string;
+    last_used_at_diff: string | null;
+};
+
+export type TwoFactorConfigContent = {
+    title: string;
+    description: string;
+    buttonText: string;
+};

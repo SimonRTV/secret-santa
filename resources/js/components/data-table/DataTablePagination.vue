@@ -1,0 +1,170 @@
+<script setup lang="ts">
+import type { PaginationState } from '@tanstack/vue-table';
+import { computed, useId } from 'vue';
+import { Button } from '@/components/ui/button';
+import { Field, FieldLabel } from '@/components/ui/field';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Spinner } from '@/components/ui/spinner';
+
+const props = withDefaults(
+    defineProps<{
+        pagination: PaginationState;
+        rowCount: number;
+        processing?: boolean;
+        pageSizeOptions?: readonly number[];
+        itemLabel?: string;
+        itemsLabel?: string;
+        emptyLabel?: string;
+    }>(),
+    {
+        processing: false,
+        pageSizeOptions: () => [10, 25, 50],
+        itemLabel: 'élément',
+        itemsLabel: 'éléments',
+        emptyLabel: 'Aucun élément trouvé',
+    },
+);
+
+const emit = defineEmits<{
+    'update:pagination': [pagination: PaginationState];
+}>();
+
+const pageSizeId = useId();
+const pageCount = computed(() =>
+    Math.max(1, Math.ceil(props.rowCount / props.pagination.pageSize)),
+);
+const firstVisibleRow = computed(() =>
+    props.rowCount === 0
+        ? null
+        : props.pagination.pageIndex * props.pagination.pageSize + 1,
+);
+const lastVisibleRow = computed(() =>
+    props.rowCount === 0
+        ? null
+        : Math.min(
+              (props.pagination.pageIndex + 1) * props.pagination.pageSize,
+              props.rowCount,
+          ),
+);
+const canGoToPreviousPage = computed(() => props.pagination.pageIndex > 0);
+const canGoToNextPage = computed(
+    () => props.pagination.pageIndex < pageCount.value - 1,
+);
+
+function updatePageSize(value: unknown): void {
+    const pageSize = Number(value);
+
+    if (!props.pageSizeOptions.includes(pageSize)) {
+        return;
+    }
+
+    emit('update:pagination', {
+        pageIndex: 0,
+        pageSize,
+    });
+}
+
+function goToPreviousPage(): void {
+    if (!canGoToPreviousPage.value) {
+        return;
+    }
+
+    emit('update:pagination', {
+        ...props.pagination,
+        pageIndex: props.pagination.pageIndex - 1,
+    });
+}
+
+function goToNextPage(): void {
+    if (!canGoToNextPage.value) {
+        return;
+    }
+
+    emit('update:pagination', {
+        ...props.pagination,
+        pageIndex: props.pagination.pageIndex + 1,
+    });
+}
+</script>
+
+<template>
+    <div
+        class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+    >
+        <div class="text-muted-foreground flex items-center gap-3 text-sm">
+            <span v-if="rowCount">
+                Affichage de {{ firstVisibleRow }} à {{ lastVisibleRow }} sur
+                {{ rowCount }}
+                {{ rowCount === 1 ? itemLabel : itemsLabel }}
+            </span>
+            <span v-else>{{ emptyLabel }}</span>
+            <span
+                v-if="processing"
+                class="flex items-center gap-2"
+                aria-live="polite"
+            >
+                <Spinner />
+                Mise à jour…
+            </span>
+        </div>
+
+        <div
+            class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:justify-end"
+        >
+            <Field orientation="horizontal" class="w-auto gap-2">
+                <FieldLabel :for="pageSizeId" class="whitespace-nowrap">
+                    Lignes par page
+                </FieldLabel>
+                <Select
+                    :model-value="String(pagination.pageSize)"
+                    @update:model-value="updatePageSize"
+                >
+                    <SelectTrigger :id="pageSizeId" class="w-20">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectItem
+                                v-for="pageSize in pageSizeOptions"
+                                :key="pageSize"
+                                :value="String(pageSize)"
+                            >
+                                {{ pageSize }}
+                            </SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+            </Field>
+
+            <span class="text-muted-foreground text-sm">
+                Page {{ pagination.pageIndex + 1 }} sur {{ pageCount }}
+            </span>
+
+            <div class="flex gap-2">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    :disabled="processing || !canGoToPreviousPage"
+                    @click="goToPreviousPage"
+                >
+                    Précédent
+                </Button>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    :disabled="processing || !canGoToNextPage"
+                    @click="goToNextPage"
+                >
+                    Suivant
+                </Button>
+            </div>
+        </div>
+    </div>
+</template>

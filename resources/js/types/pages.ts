@@ -1,0 +1,53 @@
+import type { TemplateValues } from './page-templates';
+import type { MediaItem } from './media';
+import type { Pagination } from './pagination';
+
+export type PageStatus = 'draft' | 'published';
+
+export type PageStatusFilter = PageStatus | null;
+
+export type PageSort = 'title' | 'is_published' | 'published_at' | 'updated_at';
+
+export type PageSortDirection = 'asc' | 'desc';
+
+export type PageIndexFilters = {
+    search: string | null;
+    status: PageStatusFilter;
+    sort: PageSort;
+    direction: PageSortDirection;
+    per_page: 10 | 25 | 50;
+};
+
+export type PageSummary = {
+    id: number;
+    title: string;
+    slug: string;
+    is_published: boolean;
+    status: PageStatus;
+    published_at: string | null;
+    updated_at: string | null;
+};
+
+export type PageDetail = PageSummary & {
+    page_template_id: number | null;
+    template_fields: TemplateValues;
+    has_draft: boolean;
+    public_slug: string;
+    excerpt: string | null;
+    body: string | null;
+    body_html: string;
+    created_at: string | null;
+};
+
+export type PublicPage = {
+    attachments: MediaItem[];
+    title: string;
+    slug: string;
+    excerpt: string | null;
+    body: string | null;
+    body_html: string;
+    published_at: string | null;
+    updated_at: string | null;
+};
+
+export type PagePagination = Pagination<PageSummary>;

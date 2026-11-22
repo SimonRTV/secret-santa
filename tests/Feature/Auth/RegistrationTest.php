@@ -1,0 +1,34 @@
+<?php
+
+namespace Tests\Feature\Auth;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
+use Laravel\Fortify\Features;
+use Tests\TestCase;
+
+class RegistrationTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_public_registration_is_disabled(): void
+    {
+        $this->assertFalse(Features::enabled(Features::registration()));
+
+        $this->get('/register')->assertNotFound();
+        $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])->assertNotFound();
+
+        $this->assertGuest();
+        $this->assertDatabaseMissing('users', ['email' => 'test@example.com']);
+
+        $this->get(route('login'))
+            ->assertInertia(fn (Assert $page): Assert => $page
+                ->component('auth/Login')
+                ->where('registrationUrl', null));
+    }
+}
