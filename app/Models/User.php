@@ -35,8 +35,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'email_verified_at', 'appearance', 'admin_theme'])]
-#[Hidden(['notification_preferences', 'password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
+#[Fillable(['name', 'email', 'password', 'email_verified_at', 'admin_theme'])]
+#[Hidden(['appearance', 'notification_preferences', 'password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
@@ -48,7 +48,6 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'appearance' => 'system',
         'admin_theme' => 'neutral',
     ];
 

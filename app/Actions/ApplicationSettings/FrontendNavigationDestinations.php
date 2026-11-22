@@ -13,12 +13,7 @@ class FrontendNavigationDestinations
      * @var list<array{label: string, url: string}>
      */
     public const HOME_SECTIONS = [
-        ['label' => 'Fonctionnalités', 'url' => '#features'],
-        ['label' => 'Workflows simples', 'url' => '#simple-workflows'],
-        ['label' => 'Visibilité partagée', 'url' => '#shared-visibility'],
-        ['label' => 'Conçu pour grandir', 'url' => '#built-to-grow'],
-        ['label' => 'Fonctionnement', 'url' => '#workflow'],
-        ['label' => 'À propos', 'url' => '#about'],
+        ['label' => 'Comment ça marche ?', 'url' => '#workflow'],
     ];
 
     public const PAGE_LIMIT = 200;

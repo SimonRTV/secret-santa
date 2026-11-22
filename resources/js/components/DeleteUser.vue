@@ -29,9 +29,9 @@ const passwordInput = useTemplateRef('passwordInput');
             description="Supprimez votre compte et toutes les données associées"
         />
         <div
-            class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4 dark:border-red-200/10 dark:bg-red-700/10"
+            class="space-y-4 rounded-lg border border-red-100 bg-red-50 p-4"
         >
-            <div class="relative space-y-0.5 text-red-600 dark:text-red-100">
+            <div class="relative space-y-0.5 text-red-600">
                 <p class="font-medium">Attention</p>
                 <p class="text-sm">
                     Procédez avec prudence, cette action est irréversible.

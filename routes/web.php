@@ -5,6 +5,8 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\BulkMediaController;
 use App\Http\Controllers\BulkPageController;
 use App\Http\Controllers\CsvImportController;
+use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\MediaFolderController;
@@ -35,6 +37,15 @@ Route::get('/', function (SeoSettings $seo) {
 
     return Inertia::render('Welcome');
 })->name('home');
+Route::withHead(robots: 'none')->middleware([EnsureFeatureEnabled::class.':starter.features.public_site', 'cache.headers:private;no_store'])->group(function (): void {
+    Route::get('familles', [FamilyController::class, 'index'])->name('families.index')->withHead(title: 'Mes familles');
+    Route::post('familles', [FamilyController::class, 'store'])->middleware('throttle:15,1')->name('families.store');
+    Route::get('familles/{family}', [FamilyController::class, 'show'])->name('families.show')->withHead(title: 'Ma famille');
+    Route::post('familles/{family}/membres', [FamilyMemberController::class, 'store'])->middleware('throttle:30,1')->name('families.members.store');
+    Route::post('familles/{family}/tirage', [FamilyController::class, 'draw'])->middleware('throttle:10,1')->name('families.draw');
+    Route::get('invitations/{member}', [FamilyMemberController::class, 'show'])->name('members.show')->withHead(title: 'Mon invitation');
+    Route::patch('invitations/{member}', [FamilyMemberController::class, 'update'])->middleware('throttle:30,1')->name('members.update');
+});
 Route::get('content/{page:slug}', PublicPageController::class)
     ->middleware([EnsureFeatureEnabled::class.':starter.features.public_site', EnsureFeatureEnabled::class.':starter.features.pages'])
     ->name('content.show');

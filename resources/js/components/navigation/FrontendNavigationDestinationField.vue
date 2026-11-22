@@ -195,7 +195,7 @@ function pick(destination: FrontendNavigationDestination): void {
             :class="
                 cn(
                     'flex items-start gap-1.5 text-xs',
-                    warning && 'text-amber-700 dark:text-amber-400',
+                    warning && 'text-amber-700',
                 )
             "
             data-test="navigation-destination-hint"

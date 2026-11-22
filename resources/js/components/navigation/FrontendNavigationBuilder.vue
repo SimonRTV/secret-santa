@@ -939,7 +939,7 @@ function moveChildWithKeyboard(
                                         <Badge
                                             v-else-if="itemNeedsAttention(item)"
                                             variant="outline"
-                                            class="border-amber-500/50 text-amber-700 dark:text-amber-400"
+                                            class="border-amber-500/50 text-amber-700"
                                         >
                                             À vérifier
                                         </Badge>

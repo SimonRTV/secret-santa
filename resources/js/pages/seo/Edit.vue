@@ -602,7 +602,7 @@ const sections = computed<
                             {{ form.canonical_url || publicUrl }}
                         </p>
                         <p
-                            class="line-clamp-2 text-xl leading-snug text-blue-700 dark:text-blue-400"
+                            class="line-clamp-2 text-xl leading-snug text-blue-700"
                         >
                             {{ previewTitle }}
                         </p>
@@ -675,7 +675,7 @@ const sections = computed<
                 >
                     <p
                         :class="{
-                            'text-amber-700 dark:text-amber-400':
+                            'text-amber-700':
                                 !isIndexable || !isPublished,
                         }"
                     >

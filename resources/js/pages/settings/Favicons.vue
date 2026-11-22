@@ -300,10 +300,6 @@ function removeSvg(): void {
                               ? 'Aucun SVG : les navigateurs utilisent les favicons générés.'
                               : 'Le favicon SVG par défaut est utilisé.'
                     }}
-                    Un SVG peut adapter ses couleurs au mode sombre avec
-                    <code class="text-xs"
-                        >@media (prefers-color-scheme: dark)</code
-                    >.
                 </p>
 
                 <FieldGroup class="mt-6">

@@ -47,11 +47,11 @@ class PagePreviewTest extends TestCase
     {
         $page = Page::factory()->draft()->create(['seo' => ['robots_index' => 'index', 'robots_follow' => 'follow']]);
         $user = $this->editor();
-        $user->update(['appearance' => 'dark', 'admin_theme' => 'ocean']);
+        $user->update(['admin_theme' => 'ocean']);
 
         $response = $this->actingAs($user)->get(route('content.preview', $page))->assertOk()
             ->assertSee('name="robots" content="none"', false)
-            ->assertViewHas('appearanceSurface', 'frontend')
+            ->assertSee('name="color-scheme" content="only light"', false)
             ->assertViewHas('adminTheme', 'neutral');
         $this->assertStringContainsString('no-store', $response->headers->get('Cache-Control'));
         $this->assertStringContainsString('private', $response->headers->get('Cache-Control'));

@@ -30,12 +30,11 @@ class AppearanceTest extends TestCase
     #[DataProvider('workspacePalettes')]
     public function test_workspace_palette_is_preserved_between_dashboard_and_settings(string $theme, string $appearance): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['appearance' => $appearance]);
 
         $this->actingAs($user)
             ->patchJson(route('appearance.update'), [
                 'admin_theme' => $theme,
-                'appearance' => $appearance,
             ])
             ->assertOk();
 
@@ -43,12 +42,11 @@ class AppearanceTest extends TestCase
             $this->get(route($route))
                 ->assertOk()
                 ->assertSee('data-admin-theme="'.$theme.'"', false)
-                ->assertSee('data-appearance="'.$appearance.'"', false)
-                ->assertSee('data-appearance-surface="dashboard"', false)
+                ->assertSee('name="color-scheme" content="only light"', false)
                 ->assertInertia(fn (Assert $page) => $page
                     ->component($component)
                     ->where('auth.user.admin_theme', $theme)
-                    ->where('auth.user.appearance', $appearance),
+                    ->missing('auth.user.appearance'),
                 );
         }
     }
@@ -83,11 +81,10 @@ class AppearanceTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('data-admin-theme="forest"', false)
-            ->assertSee('data-appearance="dark"', false)
-            ->assertSee('data-appearance-surface="dashboard"', false)
+            ->assertSee('name="color-scheme" content="only light"', false)
             ->assertInertia(fn (Assert $page) => $page
                 ->component('settings/Appearance')
-                ->where('auth.user.appearance', 'dark')
+                ->missing('auth.user.appearance')
                 ->where('auth.user.admin_theme', 'forest'),
             );
     }
@@ -100,21 +97,19 @@ class AppearanceTest extends TestCase
             ->patchJson(route('appearance.update'), [
                 'appearance' => 'dark',
             ])
-            ->assertOk()
-            ->assertJsonPath('appearance', 'dark')
-            ->assertJsonPath('admin_theme', 'neutral');
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('appearance');
 
         $this->actingAs($user)
             ->patchJson(route('appearance.update'), [
                 'admin_theme' => 'ocean',
             ])
             ->assertOk()
-            ->assertJsonPath('appearance', 'dark')
             ->assertJsonPath('admin_theme', 'ocean');
 
         $user->refresh();
 
-        $this->assertSame('dark', $user->appearance);
+        $this->assertSame('system', $user->appearance);
         $this->assertSame('ocean', $user->admin_theme);
     }
 
@@ -143,7 +138,6 @@ class AppearanceTest extends TestCase
 
         $this->actingAs($firstUser)
             ->patchJson(route('appearance.update'), [
-                'appearance' => 'dark',
                 'admin_theme' => 'forest',
             ])
             ->assertOk();
@@ -151,13 +145,13 @@ class AppearanceTest extends TestCase
         $firstUser->refresh();
         $secondUser->refresh();
 
-        $this->assertSame('dark', $firstUser->appearance);
+        $this->assertSame('system', $firstUser->appearance);
         $this->assertSame('forest', $firstUser->admin_theme);
         $this->assertSame('system', $secondUser->appearance);
         $this->assertSame('neutral', $secondUser->admin_theme);
     }
 
-    public function test_public_frontend_uses_its_own_appearance_and_neutral_palette(): void
+    public function test_public_frontend_uses_light_mode_and_neutral_palette(): void
     {
         $user = User::factory()->create([
             'appearance' => 'dark',
@@ -172,8 +166,7 @@ class AppearanceTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('data-admin-theme="neutral"', false)
-            ->assertSee('data-appearance="light"', false)
-            ->assertSee('data-appearance-surface="frontend"', false);
+            ->assertSee('name="color-scheme" content="only light"', false);
 
         $darkResponse = $this
             ->actingAs($user)
@@ -183,13 +176,13 @@ class AppearanceTest extends TestCase
         $darkResponse
             ->assertOk()
             ->assertSee('data-admin-theme="neutral"', false)
-            ->assertSee('data-appearance="dark"', false);
+            ->assertSee('name="color-scheme" content="only light"', false);
 
         $this->assertSame(1, preg_match('/<html\b[^>]*\bclass="([^"]*)"/i', $darkResponse->getContent(), $matches));
-        $this->assertContains('dark', preg_split('/\s+/', trim($matches[1])));
+        $this->assertNotContains('dark', preg_split('/\s+/', trim($matches[1])));
     }
 
-    public function test_invalid_frontend_appearance_falls_back_to_system(): void
+    public function test_invalid_frontend_appearance_is_ignored(): void
     {
         $response = $this
             ->withUnencryptedCookie('frontend_appearance', 'unknown')
@@ -198,7 +191,6 @@ class AppearanceTest extends TestCase
         $response
             ->assertOk()
             ->assertSee('data-admin-theme="neutral"', false)
-            ->assertSee('data-appearance="system"', false)
-            ->assertSee('data-appearance-surface="frontend"', false);
+            ->assertSee('name="color-scheme" content="only light"', false);
     }
 }

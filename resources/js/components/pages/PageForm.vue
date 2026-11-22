@@ -296,7 +296,7 @@ onUnmounted(() => removeNavigationListener?.());
                                 />
                                 <Check
                                     v-else-if="page"
-                                    class="size-3 text-emerald-600 dark:text-emerald-400"
+                                    class="size-3 text-emerald-600"
                                 />
                                 {{ saveStatus }}
                             </p>

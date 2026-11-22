@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { ArrowRight, ChevronDown, Menu } from '@lucide/vue';
-import { ref } from 'vue';
+import { ArrowRight, ChevronDown, Menu, UsersRound, Gift } from '@lucide/vue';
+import { onMounted, ref } from 'vue';
+import { applyAdminTheme } from '@/composables/useAdminTheme';
 import AppLogoFull from '@/components/AppLogoFull.vue';
 import FrontendNavigationChildContent from '@/components/frontend/FrontendNavigationChildContent.vue';
 import PagePreviewBanner from '@/components/pages/PagePreviewBanner.vue';
-import FrontendAppearanceSwitch from '@/components/FrontendAppearanceSwitch.vue';
 import { Button } from '@/components/ui/button';
 import {
     Collapsible,
@@ -29,8 +29,8 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { useFrontendAppearance } from '@/composables/useFrontendAppearance';
 import { dashboard, home, login } from '@/routes';
+import { index as families } from '@/routes/families';
 
 const props = withDefaults(
     defineProps<{
@@ -42,8 +42,8 @@ const props = withDefaults(
 );
 
 const page = usePage();
+onMounted(() => applyAdminTheme('neutral'));
 const isMobileMenuOpen = ref(false);
-const { canChooseFrontendAppearance } = useFrontendAppearance();
 
 function isExternal(url: string): boolean {
     return /^https?:\/\//i.test(url);
@@ -81,23 +81,37 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
 
 <template>
     <header
-        class="border-border/70 bg-background/85 sticky top-0 z-40 border-b backdrop-blur-xl"
+        class="christmas-header sticky top-0 z-40 border-b backdrop-blur-xl"
     >
         <PagePreviewBanner />
         <div
-            class="mx-auto flex h-18 max-w-7xl items-center justify-between gap-6 px-5 sm:px-8 lg:px-10"
+            class="mx-auto flex h-18 max-w-[1240px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-12"
         >
             <Link
                 :href="home()"
                 class="focus-visible:ring-ring focus-visible:ring-offset-background inline-flex min-w-0 items-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                :aria-label="`${page.props.name} home`"
+                :aria-label="`Accueil de ${page.props.name}`"
             >
-                <AppLogoFull class="text-foreground h-8 w-auto max-w-40" />
+                <AppLogoFull
+                    v-if="
+                        page.props.branding.fullLogoUrl ||
+                        page.props.branding.iconUrl
+                    "
+                    class="text-foreground h-8 w-auto max-w-40"
+                />
+                <span v-else class="inline-flex items-center gap-2.5">
+                    <span class="brand-gift"
+                        ><Gift :size="22" :stroke-width="1.7"
+                    /></span>
+                    <strong class="holiday-serif text-[26px] tracking-[-.055em]"
+                        >Noël Secret</strong
+                    >
+                </span>
             </Link>
 
             <nav
                 v-if="page.props.navigation.frontend.length > 0"
-                aria-label="Primary navigation"
+                aria-label="Navigation principale"
                 class="hidden items-center lg:flex"
             >
                 <NavigationMenu :viewport="false">
@@ -203,25 +217,11 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
             </nav>
 
             <div class="flex items-center gap-2">
-                <FrontendAppearanceSwitch v-if="canChooseFrontendAppearance" />
-                <Button
-                    v-if="page.props.auth.user"
-                    as-child
-                    class="hidden lg:inline-flex"
+                <Link
+                    :href="families()"
+                    class="holiday-outline inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold"
+                    ><UsersRound class="size-4" /> Mes familles</Link
                 >
-                    <Link :href="dashboard()" prefetch>
-                        Dashboard
-                        <ArrowRight data-icon="inline-end" />
-                    </Link>
-                </Button>
-                <Button
-                    v-else
-                    as-child
-                    variant="ghost"
-                    class="hidden lg:inline-flex"
-                >
-                    <Link :href="login()" prefetch>Log in</Link>
-                </Button>
 
                 <Sheet v-model:open="isMobileMenuOpen">
                     <SheetTrigger as-child>
@@ -229,7 +229,7 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
                             variant="ghost"
                             size="icon"
                             class="lg:hidden"
-                            aria-label="Open navigation menu"
+                            aria-label="Ouvrir le menu"
                         >
                             <Menu />
                         </Button>
@@ -238,23 +238,30 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
                         <SheetHeader class="border-b px-6 py-5 pr-14 text-left">
                             <SheetTitle class="sr-only">Menu</SheetTitle>
                             <SheetDescription class="sr-only">
-                                Explore the site or access your workspace.
+                                Accédez aux pages du site et à votre espace.
                             </SheetDescription>
                             <Link
                                 :href="home()"
                                 class="focus-visible:ring-ring inline-flex w-fit items-center rounded-md outline-none focus-visible:ring-2"
-                                :aria-label="`${page.props.name} home`"
+                                :aria-label="`Accueil de ${page.props.name}`"
                                 @click="isMobileMenuOpen = false"
                             >
                                 <AppLogoFull
+                                    v-if="
+                                        page.props.branding.fullLogoUrl ||
+                                        page.props.branding.iconUrl
+                                    "
                                     class="text-foreground h-8 w-auto max-w-40"
                                 />
+                                <strong v-else class="holiday-serif text-2xl"
+                                    >Noël Secret</strong
+                                >
                             </Link>
                         </SheetHeader>
 
                         <nav
                             v-if="page.props.navigation.frontend.length > 0"
-                            aria-label="Mobile navigation"
+                            aria-label="Navigation mobile"
                             class="flex flex-1 flex-col gap-2 overflow-y-auto px-4 py-6"
                         >
                             <template
@@ -381,20 +388,20 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
                             </template>
                         </nav>
 
-                        <div class="p-4">
+                        <div class="grid gap-4 p-4">
                             <Button
                                 v-if="page.props.auth.user"
                                 as-child
                                 class="w-full"
                             >
                                 <Link :href="dashboard()">
-                                    Open dashboard
+                                    Tableau de bord
                                     <ArrowRight data-icon="inline-end" />
                                 </Link>
                             </Button>
                             <Button v-else as-child class="w-full">
                                 <Link :href="login()">
-                                    Log in
+                                    Connexion
                                     <ArrowRight data-icon="inline-end" />
                                 </Link>
                             </Button>

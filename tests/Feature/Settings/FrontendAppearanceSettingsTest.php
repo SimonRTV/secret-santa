@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Settings;
 
-use App\Actions\ApplicationSettings\FrontendAppearanceSettings;
-use App\Actions\ApplicationSettings\UpdateFrontendAppearanceSettings;
 use App\Models\ApplicationSetting;
 use App\Models\User;
 use App\Policies\RolePolicy;
@@ -17,122 +15,62 @@ class FrontendAppearanceSettingsTest extends TestCase
 {
     use LazilyRefreshDatabase;
 
-    /**
-     * @return array<string, array{'system'|'light'|'dark'}>
-     */
-    public static function forcedModes(): array
+    public function test_appearance_settings_are_unavailable_to_guests_and_users(): void
     {
-        return [
-            'system' => ['system'],
-            'light' => ['light'],
-            'dark' => ['dark'],
-        ];
-    }
-
-    public function test_guests_and_non_administrators_cannot_read_or_write_settings(): void
-    {
-        $this->get(route('frontend-appearance.edit'))->assertRedirect(route('login'));
-        $this->put(route('frontend-appearance.update'), ['mode' => 'dark'])->assertRedirect(route('login'));
-
+        $this->get('/settings/frontend-appearance')->assertNotFound();
+        $this->put('/settings/frontend-appearance', ['mode' => 'dark'])->assertNotFound();
         $this->actingAs(User::factory()->create());
-        $this->get(route('frontend-appearance.edit'))->assertForbidden();
-        $this->put(route('frontend-appearance.update'), ['mode' => 'dark'])->assertForbidden();
-        $this->assertDatabaseCount('application_settings', 0);
+        $this->get('/settings/frontend-appearance')->assertNotFound();
+        $this->put('/settings/frontend-appearance', ['mode' => 'dark'])->assertNotFound();
     }
 
     public function test_settings_page_is_unavailable_without_the_public_site(): void
     {
         config(['starter.features.public_site' => false]);
-        $this->actingAs($this->administrator());
-
-        $this->get(route('frontend-appearance.edit'))->assertNotFound();
-        $this->put(route('frontend-appearance.update'), ['mode' => 'dark'])->assertNotFound();
+        $this->actingAs($this->administrator())->get('/settings/frontend-appearance')->assertNotFound();
     }
 
-    public function test_settings_are_validated_and_persisted(): void
+    public function test_administrators_cannot_enable_a_public_dark_mode(): void
     {
-        $this->actingAs($this->administrator());
-
-        $this->get(route('frontend-appearance.edit'))->assertInertia(fn (Assert $page) => $page
-            ->component('settings/FrontendAppearance')
-            ->where('settings', ['mode' => 'toggle']));
-
-        $this->put(route('frontend-appearance.update'), [])->assertSessionHasErrors('mode');
-        $this->put(route('frontend-appearance.update'), ['mode' => 'sepia'])->assertSessionHasErrors('mode');
-        $this->put(route('frontend-appearance.update'), ['mode' => ['dark']])->assertSessionHasErrors('mode');
-        $this->assertDatabaseCount('application_settings', 0);
-
-        $this->put(route('frontend-appearance.update'), ['mode' => 'dark', 'secret' => 'ignore'])
-            ->assertRedirect(route('frontend-appearance.edit'));
-
-        $this->assertSame(['mode' => 'dark'], app(FrontendAppearanceSettings::class)->get());
-        $this->assertStringNotContainsString('secret', ApplicationSetting::query()->sole()->value);
-
-        $this->get(route('frontend-appearance.edit'))->assertInertia(fn (Assert $page) => $page
-            ->where('settings', ['mode' => 'dark'])
-            ->where('frontendAppearance', ['mode' => 'dark']));
-
-        $this->put(route('frontend-appearance.update'), ['mode' => 'toggle'])->assertRedirect();
-        $this->assertSame(['mode' => 'toggle'], app(FrontendAppearanceSettings::class)->get());
-        $this->assertDatabaseCount('application_settings', 1);
+        $this->actingAs($this->administrator())->put('/settings/frontend-appearance', ['mode' => 'dark'])->assertNotFound();
+        $this->assertDatabaseMissing('application_settings', ['key' => 'appearance.frontend']);
     }
 
-    public function test_visitor_choice_is_used_when_the_toggle_is_enabled(): void
+    public function test_visitor_cookie_cannot_enable_dark_mode(): void
     {
-        $this->withUnencryptedCookie('frontend_appearance', 'dark')
-            ->get(route('home'))
-            ->assertOk()
-            ->assertSee('data-appearance="dark"', false)
-            ->assertInertia(fn (Assert $page) => $page->where('frontendAppearance', ['mode' => 'toggle']));
+        $this->withUnencryptedCookie('frontend_appearance', 'dark')->get(route('home'))
+            ->assertOk()->assertSee('name="color-scheme" content="only light"', false)
+            ->assertDontSee('prefers-color-scheme: dark')->assertInertia(fn (Assert $page) => $page->missing('frontendAppearance'));
     }
 
-    #[DataProvider('forcedModes')]
-    public function test_forced_mode_overrides_the_visitor_choice_on_public_pages(string $mode): void
+    /** @return array<string, array{string}> */
+    public static function storedModes(): array
     {
-        app(UpdateFrontendAppearanceSettings::class)->handle(['mode' => $mode]);
-        $visitorChoice = $mode === 'dark' ? 'light' : 'dark';
-
-        $response = $this->withUnencryptedCookie('frontend_appearance', $visitorChoice)->get(route('home'));
-
-        $response
-            ->assertOk()
-            ->assertSee('data-appearance="'.$mode.'"', false)
-            ->assertSee('data-appearance-surface="frontend"', false)
-            ->assertInertia(fn (Assert $page) => $page->where('frontendAppearance', ['mode' => $mode]));
-
-        $this->assertSame(1, preg_match('/<html\b[^>]*\bclass="([^"]*)"/i', $response->getContent(), $matches));
-        $this->assertSame($mode === 'dark', in_array('dark', preg_split('/\s+/', trim($matches[1])), true));
+        return ['system' => ['system'], 'dark' => ['dark'], 'light' => ['light'], 'toggle' => ['toggle']];
     }
 
-    public function test_forced_mode_does_not_change_the_dashboard_preference(): void
+    #[DataProvider('storedModes')]
+    public function test_legacy_settings_leave_public_pages_light(string $mode): void
     {
-        app(UpdateFrontendAppearanceSettings::class)->handle(['mode' => 'dark']);
-        $user = User::factory()->create(['appearance' => 'light']);
-
-        $this->actingAs($user)
-            ->get(route('dashboard'))
-            ->assertOk()
-            ->assertSee('data-appearance="light"', false)
-            ->assertSee('data-appearance-surface="dashboard"', false);
-
-        $this->actingAs($user)
-            ->get(route('home'))
-            ->assertOk()
-            ->assertSee('data-appearance="dark"', false);
+        ApplicationSetting::create(['key' => 'appearance.frontend', 'value' => json_encode(['mode' => $mode])]);
+        foreach (['home', 'families.index', 'login'] as $route) {
+            $this->get(route($route))->assertOk()->assertSee('name="color-scheme" content="only light"', false)
+                ->assertDontSee('data-appearance=')->assertDontSee('prefers-color-scheme: dark');
+        }
     }
 
-    public function test_invalid_stored_mode_falls_back_to_the_toggle(): void
+    public function test_forced_mode_does_not_change_the_dashboard_palette(): void
     {
-        ApplicationSetting::query()->create([
-            'key' => FrontendAppearanceSettings::KEY,
-            'value' => json_encode(['mode' => 'sepia']),
-        ]);
+        ApplicationSetting::create(['key' => 'appearance.frontend', 'value' => '{"mode":"dark"}']);
+        $user = User::factory()->create(['appearance' => 'dark', 'admin_theme' => 'forest']);
+        $this->actingAs($user)->get(route('dashboard'))->assertOk()
+            ->assertSee('data-admin-theme="forest"', false)->assertSee('name="color-scheme" content="only light"', false);
+    }
 
-        $this->assertSame(['mode' => 'toggle'], app(FrontendAppearanceSettings::class)->get());
-
-        $this->withUnencryptedCookie('frontend_appearance', 'dark')
-            ->get(route('home'))
-            ->assertSee('data-appearance="dark"', false);
+    public function test_invalid_stored_mode_is_ignored(): void
+    {
+        ApplicationSetting::create(['key' => 'appearance.frontend', 'value' => '{"mode":"sepia"}']);
+        $this->get(route('home'))->assertOk()->assertSee('name="color-scheme" content="only light"', false);
     }
 
     private function administrator(): User

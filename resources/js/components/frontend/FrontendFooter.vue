@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import AppLogoFull from '@/components/AppLogoFull.vue';
 import CookieConsentBanner from '@/components/frontend/CookieConsentBanner.vue';
 import { useCookieConsent } from '@/composables/useCookieConsent';
-import { home, login } from '@/routes';
+import { dashboard, home, login } from '@/routes';
 
 const props = withDefaults(
     defineProps<{
@@ -55,13 +55,24 @@ function resolvedUrl(url: string): string {
             <Link
                 :href="home()"
                 class="focus-visible:ring-ring inline-flex w-fit items-center rounded-md outline-none focus-visible:ring-2"
-                :aria-label="`${page.props.name} home`"
+                :aria-label="`Accueil de ${page.props.name}`"
             >
-                <AppLogoFull class="text-foreground h-7 w-auto max-w-36" />
+                <strong
+                    v-if="
+                        !page.props.branding.fullLogoUrl &&
+                        !page.props.branding.iconUrl
+                    "
+                    class="holiday-serif text-xl"
+                    >Noël Secret</strong
+                >
+                <AppLogoFull
+                    v-else
+                    class="text-foreground h-7 w-auto max-w-36"
+                />
             </Link>
 
             <nav
-                aria-label="Footer navigation"
+                aria-label="Navigation de pied de page"
                 class="text-muted-foreground flex flex-wrap items-center gap-x-6 gap-y-3 text-sm"
             >
                 <template
@@ -90,11 +101,10 @@ function resolvedUrl(url: string): string {
                     </Link>
                 </template>
                 <Link
-                    v-if="!page.props.auth.user"
-                    :href="login()"
+                    :href="page.props.auth.user ? dashboard() : login()"
                     class="hover:text-foreground transition-colors"
                 >
-                    Log in
+                    Administration
                 </Link>
                 <button
                     v-if="isConsentRequired"

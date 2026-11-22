@@ -404,7 +404,7 @@ async function copyLink(): Promise<void> {
                                             alt_text: form.alt_text,
                                         })
                                     "
-                                    class="flex items-center gap-1.5 text-amber-700 dark:text-amber-400"
+                                    class="flex items-center gap-1.5 text-amber-700"
                                     ><TriangleAlert
                                         class="size-4 shrink-0"
                                         aria-hidden="true"

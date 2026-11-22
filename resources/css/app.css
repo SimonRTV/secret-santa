@@ -5,8 +5,6 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
     --font-sans:
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
@@ -90,6 +88,7 @@
 }
 
 :root {
+    color-scheme: only light;
     --background: hsl(0 0% 100%);
     --foreground: hsl(0 0% 3.9%);
     --card: hsl(0 0% 100%);
@@ -126,42 +125,6 @@
     --sidebar: hsl(0 0% 98%);
 }
 
-.dark {
-    --background: hsl(0 0% 3.9%);
-    --foreground: hsl(0 0% 98%);
-    --card: hsl(0 0% 3.9%);
-    --card-foreground: hsl(0 0% 98%);
-    --popover: hsl(0 0% 3.9%);
-    --popover-foreground: hsl(0 0% 98%);
-    --primary: hsl(0 0% 98%);
-    --primary-foreground: hsl(0 0% 9%);
-    --secondary: hsl(0 0% 14.9%);
-    --secondary-foreground: hsl(0 0% 98%);
-    --muted: hsl(0 0% 16.08%);
-    --muted-foreground: hsl(0 0% 63.9%);
-    --accent: hsl(0 0% 14.9%);
-    --accent-foreground: hsl(0 0% 98%);
-    --destructive: hsl(0 84% 60%);
-    --destructive-foreground: hsl(0 0% 98%);
-    --border: hsl(0 0% 14.9%);
-    --input: hsl(0 0% 14.9%);
-    --ring: hsl(0 0% 83.1%);
-    --chart-1: hsl(220 70% 50%);
-    --chart-2: hsl(160 60% 45%);
-    --chart-3: hsl(30 80% 55%);
-    --chart-4: hsl(280 65% 60%);
-    --chart-5: hsl(340 75% 55%);
-    --sidebar-background: hsl(0 0% 7%);
-    --sidebar-foreground: hsl(0 0% 95.9%);
-    --sidebar-primary: hsl(360, 100%, 100%);
-    --sidebar-primary-foreground: hsl(0 0% 100%);
-    --sidebar-accent: hsl(0 0% 15.9%);
-    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-    --sidebar-border: hsl(0 0% 15.9%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-    --sidebar: hsl(240 5.9% 10%);
-}
-
 :root[data-admin-theme='ocean'] {
     --background: hsl(214 55% 99%);
     --foreground: hsl(222 47% 11%);
@@ -190,35 +153,6 @@
     --sidebar-border: hsl(214 28% 88%);
     --sidebar-ring: hsl(221 83% 53%);
     --sidebar: hsl(214 45% 96%);
-}
-
-.dark[data-admin-theme='ocean'] {
-    --background: hsl(222 42% 10%);
-    --foreground: hsl(210 40% 98%);
-    --card: hsl(222 38% 13%);
-    --card-foreground: hsl(210 40% 98%);
-    --popover: hsl(222 38% 13%);
-    --popover-foreground: hsl(210 40% 98%);
-    --primary: hsl(199 89% 48%);
-    --primary-foreground: hsl(222 47% 11%);
-    --secondary: hsl(217 30% 21%);
-    --secondary-foreground: hsl(210 40% 98%);
-    --muted: hsl(217 28% 19%);
-    --muted-foreground: hsl(215 20% 65%);
-    --accent: hsl(217 30% 22%);
-    --accent-foreground: hsl(210 40% 98%);
-    --border: hsl(217 28% 22%);
-    --input: hsl(217 28% 22%);
-    --ring: hsl(199 89% 48%);
-    --sidebar-background: hsl(222 38% 12%);
-    --sidebar-foreground: hsl(210 40% 96%);
-    --sidebar-primary: hsl(199 89% 48%);
-    --sidebar-primary-foreground: hsl(222 47% 11%);
-    --sidebar-accent: hsl(217 30% 22%);
-    --sidebar-accent-foreground: hsl(210 40% 96%);
-    --sidebar-border: hsl(217 28% 24%);
-    --sidebar-ring: hsl(199 89% 48%);
-    --sidebar: hsl(222 38% 12%);
 }
 
 :root[data-admin-theme='forest'] {
@@ -253,35 +187,6 @@
     --sidebar-border: hsl(110 18% 84%);
     --sidebar-ring: hsl(142 71% 29%);
     --sidebar: hsl(100 25% 94%);
-}
-
-.dark[data-admin-theme='forest'] {
-    --background: hsl(144 24% 10%);
-    --foreground: hsl(84 18% 96%);
-    --card: hsl(144 22% 13%);
-    --card-foreground: hsl(84 18% 96%);
-    --popover: hsl(144 22% 13%);
-    --popover-foreground: hsl(84 18% 96%);
-    --primary: hsl(142 69% 58%);
-    --primary-foreground: hsl(144 30% 8%);
-    --secondary: hsl(142 18% 20%);
-    --secondary-foreground: hsl(84 18% 96%);
-    --muted: hsl(142 16% 18%);
-    --muted-foreground: hsl(120 10% 65%);
-    --accent: hsl(142 20% 21%);
-    --accent-foreground: hsl(84 18% 96%);
-    --border: hsl(142 18% 21%);
-    --input: hsl(142 18% 21%);
-    --ring: hsl(142 69% 58%);
-    --sidebar-background: hsl(144 22% 12%);
-    --sidebar-foreground: hsl(84 18% 94%);
-    --sidebar-primary: hsl(142 69% 58%);
-    --sidebar-primary-foreground: hsl(144 30% 8%);
-    --sidebar-accent: hsl(142 20% 20%);
-    --sidebar-accent-foreground: hsl(84 18% 94%);
-    --sidebar-border: hsl(142 18% 22%);
-    --sidebar-ring: hsl(142 69% 58%);
-    --sidebar: hsl(144 22% 12%);
 }
 
 .admin-theme-preview[data-admin-theme-preview='neutral'] {
@@ -414,33 +319,6 @@
     --admin-highlight: hsl(80 42% 71%);
 }
 
-.dark {
-    --admin-canvas: hsl(150 4% 9%);
-    --admin-panel: hsl(150 4% 13%);
-    --admin-rail: hsl(150 5% 7%);
-    --admin-focus: hsl(45 14% 82%);
-    --admin-focus-foreground: hsl(150 5% 13%);
-    --admin-highlight: hsl(150 5% 30%);
-}
-
-.dark[data-admin-theme='ocean'] {
-    --admin-canvas: hsl(222 38% 9%);
-    --admin-panel: hsl(222 32% 13%);
-    --admin-rail: hsl(222 42% 7%);
-    --admin-focus: hsl(210 56% 81%);
-    --admin-focus-foreground: hsl(222 46% 16%);
-    --admin-highlight: hsl(221 50% 35%);
-}
-
-.dark[data-admin-theme='forest'] {
-    --admin-canvas: hsl(144 22% 9%);
-    --admin-panel: hsl(144 18% 13%);
-    --admin-rail: hsl(150 23% 7%);
-    --admin-focus: hsl(80 24% 77%);
-    --admin-focus-foreground: hsl(150 23% 15%);
-    --admin-highlight: hsl(142 32% 30%);
-}
-
 .admin-workspace {
     --card: var(--admin-panel);
     --card-foreground: var(--foreground);
@@ -561,7 +439,7 @@
     @apply pb-2;
 }
 .admin-data-grid {
-    @apply overflow-hidden rounded-xl border scheme-light dark:scheme-dark;
+    @apply overflow-hidden rounded-xl border scheme-light;
 }
 .admin-eyebrow {
     @apply text-muted-foreground text-[10px] font-semibold tracking-[0.18em] uppercase;
@@ -630,4 +508,101 @@
 
 .admin-workspace [data-slot='breadcrumb-list'] {
     @apply text-xs;
+}
+
+/* Stationery colours are shared by the family pages and their dialogs. */
+.christmas,
+.christmas-header,
+.holiday-dialog {
+    --pine: #203f33;
+    --cranberry: #a03731;
+    --paper: #fbf9f3;
+    --ink-muted: #585d53;
+    --paper-line: #dcd8cc;
+    color: var(--pine);
+    background-color: var(--paper);
+}
+.christmas-header {
+    border-color: var(--paper-line);
+}
+.christmas-header [data-slot='navigation-menu-link'],
+.christmas-header [data-slot='navigation-menu-trigger'] {
+    background-color: transparent;
+}
+.holiday-serif {
+    font-family:
+        'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino,
+        Georgia, serif;
+}
+.brand-gift {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 36px;
+    border-radius: 9px;
+    color: #fff9e9;
+    background: #254936;
+}
+.holiday-primary,
+.holiday-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border-radius: 0.55rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.18s,
+        transform 0.18s;
+}
+.holiday-primary {
+    background-color: #274c39;
+    color: #fffbee;
+    padding: 0.8rem 1.15rem;
+    font-size: 0.925rem;
+}
+.holiday-primary:hover {
+    background: #173a2a;
+}
+.holiday-primary:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+.holiday-outline {
+    border: 1px solid var(--paper-line);
+}
+.holiday-outline:hover {
+    background: color-mix(in srgb, var(--pine) 6%, transparent);
+}
+.holiday-label {
+    display: grid;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.holiday-input {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--paper-line);
+    border-radius: 0.5rem;
+    padding: 0.65rem 0.8rem;
+    font-weight: 400;
+}
+.holiday-input:focus {
+    outline: 2px solid var(--pine);
+    outline-offset: 2px;
+}
+.holiday-error {
+    color: var(--cranberry);
+    font-size: 0.875rem;
+}
+.postal-edge {
+    background: repeating-linear-gradient(
+        120deg,
+        #a54740 0 13px,
+        #f8f4e9 13px 25px,
+        #576c57 25px 38px,
+        #f8f4e9 38px 50px
+    );
 }

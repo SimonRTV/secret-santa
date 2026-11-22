@@ -122,7 +122,7 @@ const emit = defineEmits<{
                 <Badge
                     v-if="isMissingAltText(item)"
                     variant="outline"
-                    class="gap-1 border-amber-500/50 text-amber-700 dark:text-amber-400"
+                    class="gap-1 border-amber-500/50 text-amber-700"
                     ><TriangleAlert class="size-3" aria-hidden="true" />Texte
                     alternatif manquant</Badge
                 >

@@ -24,13 +24,8 @@ class UpdateAppearanceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appearance' => [
-                'sometimes',
-                'required',
-                Rule::in(['light', 'dark', 'system']),
-            ],
+            'appearance' => ['prohibited'],
             'admin_theme' => [
-                'sometimes',
                 'required',
                 Rule::in(['neutral', 'ocean', 'forest']),
             ],

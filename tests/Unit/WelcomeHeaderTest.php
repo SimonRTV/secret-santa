@@ -35,7 +35,7 @@ class WelcomeHeaderTest extends TestCase
         $this->assertStringContainsString('v-if="description"', $navigationChild);
     }
 
-    public function test_full_logo_automatically_selects_the_dark_background_variant(): void
+    public function test_full_logo_uses_the_dark_background_variant_only_on_explicit_dark_surfaces(): void
     {
         $logo = file_get_contents(
             dirname(__DIR__, 2).'/resources/js/components/AppLogoFull.vue',
@@ -47,9 +47,9 @@ class WelcomeHeaderTest extends TestCase
         $this->assertIsString($logo);
         $this->assertIsString($splitAuthLayout);
         $this->assertStringContainsString('page.props.branding.darkFullLogoUrl', $logo);
-        $this->assertStringContainsString("background?: 'auto' | 'light' | 'dark'", $logo);
-        $this->assertStringContainsString("'dark:hidden'", $logo);
-        $this->assertStringContainsString("'hidden dark:block'", $logo);
+        $this->assertStringContainsString("background: 'light'", $logo);
+        $this->assertStringContainsString("props.background === 'dark'", $logo);
+        $this->assertStringNotContainsString('dark:', $logo);
         $this->assertStringContainsString('background="dark"', $splitAuthLayout);
     }
 }

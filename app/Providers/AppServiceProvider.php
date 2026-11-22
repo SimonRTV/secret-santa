@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
         Head::inertiaGlobals(fn (HeadBuilder $head) => $head
             ->viewport('width=device-width, initial-scale=1')
             ->applicationName($appName)
-            ->colorScheme('light dark')
+            ->colorScheme('only light')
             ->appleWebAppTitle($appName));
 
         Head::errors(function (ErrorPages $errors): void {

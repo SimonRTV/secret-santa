@@ -34,52 +34,8 @@ class ApplicationSetting extends Model
      * }>
      */
     public const DEFAULT_FRONTEND_NAVIGATION = [
-        [
-            'type' => 'group',
-            'label' => 'Platform',
-            'url' => null,
-            'children' => [
-                [
-                    'label' => 'Simple workflows',
-                    'url' => '#simple-workflows',
-                    'description' => 'Keep the next step obvious and the work moving.',
-                ],
-                [
-                    'label' => 'Shared visibility',
-                    'url' => '#shared-visibility',
-                    'description' => 'Give everyone the right context at the right time.',
-                ],
-                [
-                    'label' => 'Built to grow',
-                    'url' => '#built-to-grow',
-                    'description' => 'Add structure as your team and ambitions evolve.',
-                ],
-            ],
-        ],
-        [
-            'type' => 'link',
-            'label' => 'Features',
-            'url' => '#features',
-            'children' => [],
-        ],
-        [
-            'type' => 'link',
-            'label' => 'How it works',
-            'url' => '#workflow',
-            'children' => [],
-        ],
-        [
-            'type' => 'group',
-            'label' => 'Company',
-            'url' => null,
-            'children' => [
-                [
-                    'label' => 'About',
-                    'url' => '#about',
-                    'description' => '',
-                ],
-            ],
-        ],
+        ['type' => 'link', 'label' => 'Accueil', 'url' => '/', 'children' => []],
+        ['type' => 'link', 'label' => 'Comment ça marche ?', 'url' => '#workflow', 'children' => []],
     ];
 
     /** @var list<array{title: string, url: string}> */

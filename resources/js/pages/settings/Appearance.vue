@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import AdminThemeSelector from '@/components/AdminThemeSelector.vue';
-import AppearanceTabs from '@/components/AppearanceTabs.vue';
 import Heading from '@/components/Heading.vue';
 import { edit } from '@/routes/appearance';
 
@@ -24,7 +23,6 @@ defineOptions({
             title="Paramètres d’apparence"
             description="Personnalisez l’apparence de votre compte"
         />
-        <AppearanceTabs />
         <AdminThemeSelector />
     </div>
 </template>

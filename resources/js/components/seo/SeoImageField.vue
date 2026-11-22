@@ -266,7 +266,7 @@ onBeforeUnmount(clearPreview);
                 >
                 <p
                     v-else-if="dimensionWarning"
-                    class="text-sm text-amber-700 dark:text-amber-400"
+                    class="text-sm text-amber-700"
                 >
                     {{ dimensionWarning }}
                 </p>

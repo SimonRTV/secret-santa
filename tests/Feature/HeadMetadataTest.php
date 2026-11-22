@@ -25,10 +25,10 @@ class HeadMetadataTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSee("<title data-inertia=\"title\">Welcome - {$appName}</title>", false)
-            ->assertSee('name="description" content="A flexible, thoughtful workspace for bringing people, priorities, and progress together."', false)
+            ->assertSee("<title data-inertia=\"title\">Noël Secret - {$appName}</title>", false)
+            ->assertSee('name="description" content="Organisez votre Secret Santa en famille, partagez vos envies de cadeaux et découvrez à qui faire plaisir."', false)
             ->assertSee('name="robots" content="all"', false)
-            ->assertSee('property="og:title" content="Welcome - '.$appName.'"', false)
+            ->assertSee('property="og:title" content="Noël Secret - '.$appName.'"', false)
             ->assertSee('name="twitter:card" content="summary"', false)
             ->assertSee('href="'.asset('favicon.svg').'"', false)
             ->assertSee('href="'.asset('favicon-96x96.png').'"', false)

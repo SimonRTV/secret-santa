@@ -9,7 +9,7 @@ use Laravel\Head\Facades\Head;
 
 class SeoSettings
 {
-    public const DEFAULT_DESCRIPTION = 'A flexible, thoughtful workspace for bringing people, priorities, and progress together.';
+    public const DEFAULT_DESCRIPTION = 'Organisez votre Secret Santa en famille, partagez vos envies de cadeaux et découvrez à qui faire plaisir.';
 
     /** @var array<string, string> */
     public const FIELDS = [
@@ -39,7 +39,7 @@ class SeoSettings
         return $this->stored('defaults', [
             ...self::FIELDS,
             'site_name' => $name, 'title_suffix' => $name, 'locale' => 'fr_CH',
-            'meta_title' => 'Welcome', 'meta_description' => self::DEFAULT_DESCRIPTION,
+            'meta_title' => 'Noël Secret', 'meta_description' => self::DEFAULT_DESCRIPTION,
             'robots_index' => 'index', 'robots_follow' => 'follow', 'include_in_sitemap' => 'yes',
             'og_type' => 'website', 'twitter_card' => 'summary',
             'twitter_site' => '', 'google_verification' => '', 'bing_verification' => '',
