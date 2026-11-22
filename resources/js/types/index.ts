@@ -1,5 +1,6 @@
 export * from './analytics';
 export * from './auth';
+export * from './exchange';
 export * from './navigation';
 export * from './pagination';
 export * from './pages';

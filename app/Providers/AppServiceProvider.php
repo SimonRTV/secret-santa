@@ -5,10 +5,13 @@ namespace App\Providers;
 use App\Observers\ActivityObserver;
 use App\Policies\RolePolicy;
 use Carbon\CarbonImmutable;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Head\Enums\OgType;
@@ -43,6 +46,23 @@ class AppServiceProvider extends ServiceProvider
 
         $this->configureHead();
         $this->configureDefaults();
+        $this->configureExchangeRateLimits();
+    }
+
+    /**
+     * Rate limits for the account-free exchange pages. A household usually
+     * shares one IP address, so edits are counted per exchange or invitation
+     * rather than per address alone.
+     */
+    protected function configureExchangeRateLimits(): void
+    {
+        RateLimiter::for('exchange-create', fn (Request $request): Limit => Limit::perMinute(10)->by($request->ip()));
+        RateLimiter::for('exchange-edits', fn (Request $request): Limit => Limit::perMinute(120)
+            ->by($request->route()?->originalParameter('family').'|'.$request->ip()));
+        RateLimiter::for('exchange-draw', fn (Request $request): Limit => Limit::perMinute(20)
+            ->by((string) $request->route()?->originalParameter('family')));
+        RateLimiter::for('invitation', fn (Request $request): Limit => Limit::perMinute(120)
+            ->by($request->route()?->originalParameter('member').'|'.$request->ip()));
     }
 
     /**

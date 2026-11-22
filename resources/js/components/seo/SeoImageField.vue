@@ -264,10 +264,7 @@ onBeforeUnmount(clearPreview);
                     :id="`${field}-file-error`"
                     >{{ upload.errors.image }}</FieldError
                 >
-                <p
-                    v-else-if="dimensionWarning"
-                    class="text-sm text-amber-700"
-                >
+                <p v-else-if="dimensionWarning" class="text-sm text-amber-700">
                     {{ dimensionWarning }}
                 </p>
                 <ConfirmationAction

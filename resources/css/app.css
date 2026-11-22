@@ -515,15 +515,27 @@
 .christmas-header,
 .holiday-dialog {
     --pine: #203f33;
+    --pine-deep: #142e24;
+    --pine-soft: #36573f;
     --cranberry: #a03731;
+    --gold: #b0852f;
+    --gold-ink: #866824;
+    --gold-tint: #f4ead0;
     --paper: #fbf9f3;
-    --ink-muted: #585d53;
+    --paper-deep: #f6f1e5;
+    --card: #fffdf8;
+    --radius-control: 6px;
+    --radius-surface: 12px;
+    --ink-muted: #5d6258;
     --paper-line: #dcd8cc;
+    --paper-shadow:
+        0 1px 0 #ffffff inset, 0 1px 2px #46331d0d, 0 8px 24px -12px #46331d26;
     color: var(--pine);
     background-color: var(--paper);
 }
 .christmas-header {
     border-color: var(--paper-line);
+    background-color: color-mix(in srgb, var(--paper) 86%, transparent);
 }
 .christmas-header [data-slot='navigation-menu-link'],
 .christmas-header [data-slot='navigation-menu-trigger'] {
@@ -531,78 +543,189 @@
 }
 .holiday-serif {
     font-family:
-        'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino,
-        Georgia, serif;
+        var(--font-fraunces, 'Fraunces'), 'Iowan Old Style',
+        'Palatino Linotype', Georgia, serif;
+    font-optical-sizing: auto;
+    font-variation-settings: 'SOFT' 50;
 }
-.brand-gift {
-    display: inline-grid;
-    place-items: center;
-    width: 34px;
-    height: 36px;
-    border-radius: 9px;
-    color: #fff9e9;
-    background: #254936;
+@layer components {
+    .brand-gift {
+        display: inline-grid;
+        place-items: center;
+        width: 34px;
+        height: 36px;
+        border-radius: var(--radius-control);
+        color: #fff9e9;
+        background: var(--pine);
+    }
+    .holiday-primary,
+    .holiday-outline,
+    .holiday-ghost,
+    .holiday-danger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.55rem;
+        border-radius: var(--radius-control);
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+            background-color 0.18s,
+            border-color 0.18s,
+            color 0.18s,
+            transform 0.12s;
+    }
+    :is(
+            .holiday-primary,
+            .holiday-outline,
+            .holiday-ghost,
+            .holiday-danger
+        ):active:not(:disabled) {
+        transform: translateY(1px);
+    }
+    :is(
+        .holiday-primary,
+        .holiday-outline,
+        .holiday-ghost,
+        .holiday-danger
+    ):focus-visible {
+        outline: 2px solid var(--pine);
+        outline-offset: 2px;
+    }
+    .holiday-primary {
+        background-color: var(--pine);
+        color: #fffbee;
+        padding: 0.8rem 1.15rem;
+        font-size: 0.925rem;
+        box-shadow:
+            0 1px 0 #ffffff26 inset,
+            0 1px 2px #0f2a1e40;
+    }
+    .holiday-primary:hover:not(:disabled) {
+        background: var(--pine-deep);
+    }
+    .holiday-primary:disabled,
+    .holiday-outline:disabled,
+    .holiday-danger:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    .holiday-outline {
+        border: 1px solid var(--paper-line);
+        background: var(--card);
+    }
+    .holiday-outline:hover:not(:disabled) {
+        border-color: color-mix(in srgb, var(--pine) 30%, var(--paper-line));
+        background: color-mix(in srgb, var(--pine) 4%, var(--card));
+    }
+    .holiday-ghost {
+        padding: 0.45rem 0.6rem;
+        font-size: 0.875rem;
+        color: var(--ink-muted);
+    }
+    .holiday-ghost:hover {
+        color: var(--pine);
+        background: color-mix(in srgb, var(--pine) 6%, transparent);
+    }
+    .holiday-danger {
+        background: var(--cranberry);
+        color: #fff8f2;
+        padding: 0.8rem 1.15rem;
+        font-size: 0.925rem;
+    }
+    .holiday-danger:hover:not(:disabled) {
+        background: #862c27;
+    }
+    .holiday-label {
+        display: grid;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    .holiday-hint {
+        font-size: 0.8125rem;
+        font-weight: 400;
+        color: var(--ink-muted);
+    }
+    .holiday-input {
+        width: 100%;
+        min-width: 0;
+        background: var(--card);
+        border: 1px solid var(--paper-line);
+        border-radius: var(--radius-control);
+        padding: 0.65rem 0.8rem;
+        font-weight: 400;
+        font-size: 1rem;
+        transition: border-color 0.15s;
+    }
+    .holiday-input::placeholder {
+        color: color-mix(in srgb, var(--ink-muted) 70%, transparent);
+    }
+    .holiday-input:hover {
+        border-color: color-mix(in srgb, var(--pine) 25%, var(--paper-line));
+    }
+    .holiday-input:focus {
+        outline: 2px solid var(--pine);
+        outline-offset: 1px;
+        border-color: transparent;
+    }
+    .holiday-input[aria-invalid='true'] {
+        border-color: var(--cranberry);
+    }
+    select.holiday-input {
+        appearance: none;
+        padding-right: 2.2rem;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23203f33' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+    }
+    .holiday-error {
+        color: var(--cranberry);
+        font-size: 0.875rem;
+    }
+    .paper-card {
+        background: var(--card);
+        border: 1px solid var(--paper-line);
+        border-radius: var(--radius-surface);
+        box-shadow: var(--paper-shadow);
+    }
+    .holiday-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        border: 1px solid var(--paper-line);
+        border-radius: 999px;
+        background: var(--card);
+        padding: 0.3rem 0.7rem;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+    .eyebrow {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--cranberry);
+    }
+    .postal-edge {
+        background: repeating-linear-gradient(
+            120deg,
+            #a54740 0 13px,
+            #f8f4e9 13px 25px,
+            #576c57 25px 38px,
+            #f8f4e9 38px 50px
+        );
+    }
 }
-.holiday-primary,
-.holiday-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    border-radius: 0.55rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-        background-color 0.18s,
-        transform 0.18s;
+.holiday-dialog {
+    border-color: var(--paper-line);
+    border-radius: var(--radius-surface);
 }
-.holiday-primary {
-    background-color: #274c39;
-    color: #fffbee;
-    padding: 0.8rem 1.15rem;
-    font-size: 0.925rem;
-}
-.holiday-primary:hover {
-    background: #173a2a;
-}
-.holiday-primary:disabled {
-    opacity: 0.55;
-    cursor: default;
-}
-.holiday-outline {
-    border: 1px solid var(--paper-line);
-}
-.holiday-outline:hover {
-    background: color-mix(in srgb, var(--pine) 6%, transparent);
-}
-.holiday-label {
-    display: grid;
-    gap: 0.4rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-.holiday-input {
-    width: 100%;
-    background: var(--paper);
-    border: 1px solid var(--paper-line);
-    border-radius: 0.5rem;
-    padding: 0.65rem 0.8rem;
-    font-weight: 400;
-}
-.holiday-input:focus {
-    outline: 2px solid var(--pine);
-    outline-offset: 2px;
-}
-.holiday-error {
-    color: var(--cranberry);
-    font-size: 0.875rem;
-}
-.postal-edge {
-    background: repeating-linear-gradient(
-        120deg,
-        #a54740 0 13px,
-        #f8f4e9 13px 25px,
-        #576c57 25px 38px,
-        #f8f4e9 38px 50px
-    );
+@media (prefers-reduced-motion: reduce) {
+    .christmas *,
+    .holiday-dialog * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }

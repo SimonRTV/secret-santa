@@ -39,7 +39,7 @@ class SeoSettings
         return $this->stored('defaults', [
             ...self::FIELDS,
             'site_name' => $name, 'title_suffix' => $name, 'locale' => 'fr_CH',
-            'meta_title' => 'Noël Secret', 'meta_description' => self::DEFAULT_DESCRIPTION,
+            'meta_title' => 'Secret Santa en famille', 'meta_description' => self::DEFAULT_DESCRIPTION,
             'robots_index' => 'index', 'robots_follow' => 'follow', 'include_in_sitemap' => 'yes',
             'og_type' => 'website', 'twitter_card' => 'summary',
             'twitter_site' => '', 'google_verification' => '', 'bing_verification' => '',

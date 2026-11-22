@@ -78,8 +78,8 @@ HELP;
             'name' => $this->option('name'),
             'locale' => $this->option('locale'),
             'timezone' => $this->option('timezone'),
-            'enable' => $this->option('enable'),
-            'disable' => $this->option('disable'),
+            'enable' => $this->listOption('enable'),
+            'disable' => $this->listOption('disable'),
         ];
         $validator = Validator::make($values, [
             'preset' => ['nullable', Rule::in(array_keys(config('starter.presets')))],
@@ -191,5 +191,17 @@ HELP;
         $this->line('Customize saved application identity in admin settings. Use a queue worker for notification emails and the scheduler for activity retention.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The string values of a repeatable option.
+     *
+     * @return list<string>
+     */
+    private function listOption(string $name): array
+    {
+        $values = $this->option($name);
+
+        return is_array($values) ? array_values(array_filter($values, is_string(...))) : [];
     }
 }

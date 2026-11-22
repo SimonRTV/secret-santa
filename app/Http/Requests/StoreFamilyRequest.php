@@ -23,6 +23,6 @@ class StoreFamilyRequest extends FormRequest
     /** @return array<string, string> */
     public function attributes(): array
     {
-        return ['name' => 'nom de la famille', 'first_name' => 'prénom'];
+        return ['name' => 'nom de l’échange', 'first_name' => 'prénom'];
     }
 }

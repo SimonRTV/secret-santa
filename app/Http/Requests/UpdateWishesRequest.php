@@ -24,4 +24,15 @@ class UpdateWishesRequest extends FormRequest
     {
         return ['wishes' => 'envies de cadeaux'];
     }
+
+    /**
+     * The wishes with one trimmed idea per line, or null when the list is empty.
+     */
+    public function wishes(): ?string
+    {
+        $lines = preg_split('/\R/', (string) $this->validated('wishes')) ?: [];
+        $wishes = implode("\n", array_filter(array_map(trim(...), $lines), fn (string $line): bool => $line !== ''));
+
+        return $wishes === '' ? null : $wishes;
+    }
 }

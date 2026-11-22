@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-    Folder,
-    Globe,
-    Link2,
-    Lock,
-    TriangleAlert,
-} from '@lucide/vue';
+import { Folder, Globe, Link2, Lock, TriangleAlert } from '@lucide/vue';
 import { Badge } from '@/components/ui/badge';
 import {
     fileExtension,

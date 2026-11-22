@@ -119,7 +119,7 @@ class MediaLibraryTest extends TestCase
         foreach ([
             UploadedFile::fake()->createWithContent('script.svg', '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
             UploadedFile::fake()->createWithContent('script.php', '<?php echo "test";'),
-            UploadedFile::fake()->create('large.pdf', 10241, 'application/pdf'),
+            UploadedFile::fake()->create('large.pdf', config('media.max_upload_kb') + 1, 'application/pdf'),
         ] as $file) {
             $this->post(route('media.store'), ['file' => $file])->assertSessionHasErrors('file');
         }

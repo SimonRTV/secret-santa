@@ -4,7 +4,8 @@ import { computed } from 'vue';
 import AppLogoFull from '@/components/AppLogoFull.vue';
 import CookieConsentBanner from '@/components/frontend/CookieConsentBanner.vue';
 import { useCookieConsent } from '@/composables/useCookieConsent';
-import { dashboard, home, login } from '@/routes';
+import { home } from '@/routes';
+import { index as families } from '@/routes/families';
 
 const props = withDefaults(
     defineProps<{
@@ -48,9 +49,9 @@ function resolvedUrl(url: string): string {
 </script>
 
 <template>
-    <footer class="border-border/70 border-t">
+    <footer class="border-t border-[var(--paper-line)]">
         <div
-            class="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-10 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10"
+            class="mx-auto flex max-w-[1240px] flex-col gap-8 px-5 py-10 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-12"
         >
             <Link
                 :href="home()"
@@ -63,7 +64,7 @@ function resolvedUrl(url: string): string {
                         !page.props.branding.iconUrl
                     "
                     class="holiday-serif text-xl"
-                    >Noël Secret</strong
+                    >{{ page.props.name }}</strong
                 >
                 <AppLogoFull
                     v-else
@@ -101,10 +102,10 @@ function resolvedUrl(url: string): string {
                     </Link>
                 </template>
                 <Link
-                    :href="page.props.auth.user ? dashboard() : login()"
+                    :href="families()"
                     class="hover:text-foreground transition-colors"
                 >
-                    Administration
+                    Mes échanges
                 </Link>
                 <button
                     v-if="isConsentRequired"

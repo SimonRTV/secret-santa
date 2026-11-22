@@ -50,8 +50,7 @@ const page = usePage();
 const auth = computed(() => page.props.auth);
 const { isCurrentUrl, whenCurrentUrl } = useCurrentUrl();
 
-const activeItemStyles =
-    'text-neutral-900';
+const activeItemStyles = 'text-neutral-900';
 
 const mainNavItems: NavItem[] = [
     {

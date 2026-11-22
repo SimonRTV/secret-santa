@@ -3,43 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFamilyMemberRequest;
-use App\Http\Requests\UpdateWishesRequest;
+use App\Http\Requests\UpdateFamilyMemberRequest;
 use App\Models\Family;
 use App\Models\FamilyMember;
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class FamilyMemberController extends Controller
 {
     public function store(StoreFamilyMemberRequest $request, Family $family): RedirectResponse
     {
-        DB::transaction(function () use ($request, $family): void {
-            $lockedFamily = Family::query()->lockForUpdate()->findOrFail($family->id);
-            if ($lockedFamily->drawn_at !== null) {
-                throw ValidationException::withMessages(['name' => 'Le tirage a déjà eu lieu.']);
+        $this->whileOpen($family, 'name', function (Family $lockedFamily) use ($request): void {
+            if ($lockedFamily->members()->count() >= Family::MaxMembers) {
+                throw ValidationException::withMessages(['name' => 'Un échange peut réunir '.Family::MaxMembers.' personnes au maximum.']);
             }
-            $lockedFamily->members()->create($request->validated());
-        }, attempts: 3);
+            $lockedFamily->members()->create(['name' => trim($request->validated('name'))]);
+        });
 
         return to_route('families.show', $family);
     }
 
-    public function show(FamilyMember $member): Response
+    public function update(UpdateFamilyMemberRequest $request, Family $family, FamilyMember $member): RedirectResponse
     {
-        return Inertia::render('families/Member', [
-            'familyName' => $member->family()->value('name'),
-            'person' => $member->only('id', 'name', 'wishes'),
-            'recipient' => $member->recipient?->only('name', 'wishes'),
-        ]);
+        $member->update(['name' => trim($request->validated('name'))]);
+
+        return to_route('families.show', $family);
     }
 
-    public function update(UpdateWishesRequest $request, FamilyMember $member): RedirectResponse
+    public function destroy(Family $family, FamilyMember $member): RedirectResponse
     {
-        $member->update($request->validated());
+        $this->whileOpen($family, 'member', fn () => $member->delete());
+        Inertia::flash('toast', ['type' => 'success', 'message' => $member->name.' ne participe plus.']);
 
-        return to_route('members.show', $member);
+        return to_route('families.show', $family);
+    }
+
+    /**
+     * Run a change to the participant list only while names are not drawn yet.
+     *
+     * @param  Closure(Family): mixed  $change
+     */
+    private function whileOpen(Family $family, string $errorKey, Closure $change): void
+    {
+        DB::transaction(function () use ($family, $errorKey, $change): void {
+            $lockedFamily = Family::query()->lockForUpdate()->findOrFail($family->id);
+            if ($lockedFamily->isDrawn()) {
+                throw ValidationException::withMessages([$errorKey => 'Le tirage a déjà eu lieu. Annulez-le pour modifier la liste.']);
+            }
+            $change($lockedFamily);
+        }, attempts: 3);
     }
 }

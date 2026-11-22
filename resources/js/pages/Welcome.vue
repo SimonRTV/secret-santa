@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-    ArrowDown,
-    Gift,
-    Mail,
-    PenLine,
-    Snowflake,
-    UsersRound,
-} from '@lucide/vue';
+import { ArrowDown } from '@lucide/vue';
 import gifts from '../../images/christmas-gifts.webp';
 import CreateFamilyDialog from '@/components/CreateFamilyDialog.vue';
 import FrontendFooter from '@/components/frontend/FrontendFooter.vue';
@@ -16,26 +9,17 @@ const steps = [
     {
         title: 'Réunissez la famille',
         description:
-            'Créez votre famille et invitez petits et grands à rejoindre l’échange.',
-        icon: UsersRound,
-        ink: '#36573f',
-        tint: '#e8eddf',
+            'Créez l’échange et ajoutez les prénoms de chacun. Pas de compte, pas d’e-mail à fournir.',
     },
     {
-        title: 'Glissez vos envies',
+        title: 'Envoyez les invitations',
         description:
-            'Chacun remplit sa liste d’idées pour guider son Père Noël secret.',
-        icon: PenLine,
-        ink: '#99433b',
-        tint: '#f6e7df',
+            'Chacun reçoit son lien personnel par WhatsApp, SMS ou e-mail et y note ses idées de cadeaux.',
     },
     {
         title: 'Laissez faire le hasard',
         description:
-            'Lancez le tirage au sort et découvrez à qui offrir un cadeau.',
-        icon: Gift,
-        ink: '#866824',
-        tint: '#f5ecd4',
+            'Un clic pour le tirage : chacun ouvre son enveloppe en secret. Les couples ne se tirent pas entre eux.',
     },
 ];
 </script>
@@ -52,13 +36,8 @@ const steps = [
                     class="grid items-center gap-4 px-6 pt-10 pb-6 sm:px-10 md:grid-cols-[1fr_1fr] md:gap-0 md:px-10 md:py-12 lg:px-14 lg:py-14"
                 >
                     <div class="relative z-10">
-                        <p
-                            class="flex items-center gap-2 text-xs font-semibold tracking-[.14em] text-[var(--cranberry)] uppercase"
-                        >
-                            <Mail class="size-4" /> Échange de cadeaux
-                        </p>
                         <h1
-                            class="holiday-serif mt-5 text-[clamp(3.4rem,5.7vw,5.25rem)] leading-[.98] font-semibold tracking-[-.06em]"
+                            class="holiday-serif text-[clamp(3.4rem,5.7vw,5.25rem)] leading-[.98] font-semibold tracking-[-.06em]"
                         >
                             Secret Santa<br /><em
                                 class="font-normal text-[var(--cranberry)]"
@@ -81,6 +60,10 @@ const steps = [
                                 >Voir les étapes <ArrowDown class="size-4"
                             /></a>
                         </div>
+                        <p class="mt-5 text-sm text-[var(--ink-muted)]">
+                            Gratuit, sans inscription, sur téléphone comme sur
+                            ordinateur.
+                        </p>
                     </div>
                     <div
                         class="gift-art relative mx-auto w-full max-w-[530px] py-3 md:py-0"
@@ -109,37 +92,21 @@ const steps = [
                     >
                         Comment ça marche ?
                     </h2>
-                    <span class="h-px grow bg-[var(--paper-line)]"></span
-                    ><Snowflake
-                        class="size-5 text-[var(--cranberry)]"
-                        aria-hidden="true"
-                    />
+                    <span class="h-px grow bg-[var(--paper-line)]"></span>
                 </div>
-                <ol class="mt-6 grid gap-4 sm:grid-cols-3 lg:gap-5">
+                <ol class="mt-8 grid gap-8 sm:grid-cols-3 sm:gap-10">
                     <li
                         v-for="(step, i) in steps"
                         :key="step.title"
-                        class="step-card rounded-xl border border-[var(--paper-line)] p-5 sm:p-6"
+                        class="grid grid-cols-[2.75rem_1fr] gap-x-2 sm:block"
                     >
-                        <div class="flex items-center justify-between">
-                            <span
-                                class="stamp-icon grid size-12 place-items-center"
-                                :style="{
-                                    color: step.ink,
-                                    backgroundColor: step.tint,
-                                }"
-                                ><component
-                                    :is="step.icon"
-                                    class="size-6"
-                                    :stroke-width="1.6"
-                            /></span>
-                            <span
-                                class="text-[10px] font-semibold tracking-[.14em] text-[var(--ink-muted)] uppercase"
-                                >Étape 0{{ i + 1 }}</span
-                            >
-                        </div>
+                        <span
+                            class="holiday-serif row-span-2 text-[3.25rem] leading-[.85] font-semibold text-[var(--cranberry)] italic sm:block"
+                            aria-hidden="true"
+                            >{{ i + 1 }}</span
+                        >
                         <h3
-                            class="holiday-serif mt-4 text-[1.52rem] leading-tight font-semibold tracking-[-.035em]"
+                            class="holiday-serif text-[1.52rem] leading-tight font-semibold tracking-[-.035em] sm:mt-3"
                         >
                             {{ step.title }}
                         </h3>
@@ -158,20 +125,7 @@ const steps = [
 
 <style scoped>
 .postcard {
-    background: #f6f1e5;
+    background: var(--paper-deep);
     box-shadow: 0 2px 4px #46331d08;
-}
-.step-card {
-    background: #fffdf8;
-}
-.stamp-icon {
-    border: 1px dashed currentColor;
-    outline: 3px solid var(--paper);
-    outline-offset: -3px;
-    border-radius: 0.32rem;
-    transform: rotate(-4deg);
-}
-li:nth-child(2) .stamp-icon {
-    transform: rotate(4deg);
 }
 </style>

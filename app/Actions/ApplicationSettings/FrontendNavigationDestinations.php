@@ -45,7 +45,7 @@ class FrontendNavigationDestinations
             return [];
         }
 
-        return Page::query()
+        return array_values(Page::query()
             ->where('is_published', true)
             ->whereNotNull('published_at')
             ->where('published_at', '<=', now())
@@ -57,7 +57,6 @@ class FrontendNavigationDestinations
                 'label' => $page->title,
                 'url' => route('content.show', ['page' => $page->slug], absolute: false),
             ])
-            ->values()
-            ->all();
+            ->all());
     }
 }

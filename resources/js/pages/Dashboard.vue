@@ -174,7 +174,9 @@ defineOptions({
                         <span class="bg-primary size-1.5 rounded-full" /> Votre
                         espace, en un regard
                     </p>
-                    <h1 class="text-4xl font-medium tracking-[-0.055em] sm:text-5xl lg:text-6xl">
+                    <h1
+                        class="text-4xl font-medium tracking-[-0.055em] sm:text-5xl lg:text-6xl"
+                    >
                         Bonjour, {{ firstName
                         }}<span class="text-primary">.</span>
                     </h1>

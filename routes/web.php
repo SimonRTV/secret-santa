@@ -6,7 +6,10 @@ use App\Http\Controllers\BulkMediaController;
 use App\Http\Controllers\BulkPageController;
 use App\Http\Controllers\CsvImportController;
 use App\Http\Controllers\FamilyController;
+use App\Http\Controllers\FamilyDrawController;
+use App\Http\Controllers\FamilyExclusionController;
 use App\Http\Controllers\FamilyMemberController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\MediaFileController;
 use App\Http\Controllers\MediaFolderController;
@@ -38,13 +41,23 @@ Route::get('/', function (SeoSettings $seo) {
     return Inertia::render('Welcome');
 })->name('home');
 Route::withHead(robots: 'none')->middleware([EnsureFeatureEnabled::class.':starter.features.public_site', 'cache.headers:private;no_store'])->group(function (): void {
-    Route::get('familles', [FamilyController::class, 'index'])->name('families.index')->withHead(title: 'Mes familles');
-    Route::post('familles', [FamilyController::class, 'store'])->middleware('throttle:15,1')->name('families.store');
-    Route::get('familles/{family}', [FamilyController::class, 'show'])->name('families.show')->withHead(title: 'Ma famille');
-    Route::post('familles/{family}/membres', [FamilyMemberController::class, 'store'])->middleware('throttle:30,1')->name('families.members.store');
-    Route::post('familles/{family}/tirage', [FamilyController::class, 'draw'])->middleware('throttle:10,1')->name('families.draw');
-    Route::get('invitations/{member}', [FamilyMemberController::class, 'show'])->name('members.show')->withHead(title: 'Mon invitation');
-    Route::patch('invitations/{member}', [FamilyMemberController::class, 'update'])->middleware('throttle:30,1')->name('members.update');
+    Route::get('familles', [FamilyController::class, 'index'])->name('families.index')->withHead(title: 'Mes échanges');
+    Route::post('familles', [FamilyController::class, 'store'])->middleware('throttle:exchange-create')->name('families.store');
+    Route::get('familles/{family}', [FamilyController::class, 'show'])->name('families.show');
+    Route::patch('familles/{family}', [FamilyController::class, 'update'])->middleware('throttle:exchange-edits')->name('families.update');
+    Route::delete('familles/{family}', [FamilyController::class, 'destroy'])->middleware('throttle:exchange-edits')->name('families.destroy');
+    Route::scopeBindings()->group(function (): void {
+        Route::post('familles/{family}/membres', [FamilyMemberController::class, 'store'])->middleware('throttle:exchange-edits')->name('families.members.store');
+        Route::patch('familles/{family}/membres/{member}', [FamilyMemberController::class, 'update'])->middleware('throttle:exchange-edits')->name('families.members.update');
+        Route::delete('familles/{family}/membres/{member}', [FamilyMemberController::class, 'destroy'])->middleware('throttle:exchange-edits')->name('families.members.destroy');
+        Route::post('familles/{family}/exceptions', [FamilyExclusionController::class, 'store'])->middleware('throttle:exchange-edits')->name('families.exclusions.store');
+        Route::delete('familles/{family}/exceptions/{exclusion}', [FamilyExclusionController::class, 'destroy'])->middleware('throttle:exchange-edits')->name('families.exclusions.destroy');
+    });
+    Route::post('familles/{family}/tirage', [FamilyDrawController::class, 'store'])->middleware('throttle:exchange-draw')->name('families.draw');
+    Route::delete('familles/{family}/tirage', [FamilyDrawController::class, 'destroy'])->middleware('throttle:exchange-draw')->name('families.draw.destroy');
+    Route::get('invitations/{member}', [InvitationController::class, 'show'])->name('members.show');
+    Route::patch('invitations/{member}', [InvitationController::class, 'update'])->middleware('throttle:invitation')->name('members.update');
+    Route::post('invitations/{member}/enveloppe', [InvitationController::class, 'reveal'])->middleware('throttle:invitation')->name('members.reveal');
 });
 Route::get('content/{page:slug}', PublicPageController::class)
     ->middleware([EnsureFeatureEnabled::class.':starter.features.public_site', EnsureFeatureEnabled::class.':starter.features.pages'])

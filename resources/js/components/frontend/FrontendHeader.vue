@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { ArrowRight, ChevronDown, Menu, UsersRound, Gift } from '@lucide/vue';
+import { ArrowRight, ChevronDown, Gift, Mails, Menu } from '@lucide/vue';
 import { onMounted, ref } from 'vue';
 import { applyAdminTheme } from '@/composables/useAdminTheme';
 import AppLogoFull from '@/components/AppLogoFull.vue';
@@ -29,7 +29,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from '@/components/ui/sheet';
-import { dashboard, home, login } from '@/routes';
+import { home } from '@/routes';
 import { index as families } from '@/routes/families';
 
 const props = withDefaults(
@@ -103,8 +103,9 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
                     <span class="brand-gift"
                         ><Gift :size="22" :stroke-width="1.7"
                     /></span>
-                    <strong class="holiday-serif text-[26px] tracking-[-.055em]"
-                        >Noël Secret</strong
+                    <strong
+                        class="holiday-serif text-[26px] tracking-[-.055em]"
+                        >{{ page.props.name }}</strong
                     >
                 </span>
             </Link>
@@ -219,8 +220,9 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
             <div class="flex items-center gap-2">
                 <Link
                     :href="families()"
-                    class="holiday-outline inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm font-semibold"
-                    ><UsersRound class="size-4" /> Mes familles</Link
+                    class="holiday-outline rounded-lg px-3 py-2 text-sm sm:px-3.5"
+                    ><Mails class="size-4" :stroke-width="1.8" />
+                    <span class="max-[419px]:sr-only">Mes échanges</span></Link
                 >
 
                 <Sheet v-model:open="isMobileMenuOpen">
@@ -253,9 +255,9 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
                                     "
                                     class="text-foreground h-8 w-auto max-w-40"
                                 />
-                                <strong v-else class="holiday-serif text-2xl"
-                                    >Noël Secret</strong
-                                >
+                                <strong v-else class="holiday-serif text-2xl">{{
+                                    page.props.name
+                                }}</strong>
                             </Link>
                         </SheetHeader>
 
@@ -389,19 +391,12 @@ function handleAnchorClick(event: MouseEvent, url: string): void {
                         </nav>
 
                         <div class="grid gap-4 p-4">
-                            <Button
-                                v-if="page.props.auth.user"
-                                as-child
-                                class="w-full"
-                            >
-                                <Link :href="dashboard()">
-                                    Tableau de bord
-                                    <ArrowRight data-icon="inline-end" />
-                                </Link>
-                            </Button>
-                            <Button v-else as-child class="w-full">
-                                <Link :href="login()">
-                                    Connexion
+                            <Button as-child class="w-full">
+                                <Link
+                                    :href="families()"
+                                    @click="isMobileMenuOpen = false"
+                                >
+                                    Mes échanges
                                     <ArrowRight data-icon="inline-end" />
                                 </Link>
                             </Button>

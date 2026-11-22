@@ -89,7 +89,7 @@ class SeoManagementTest extends TestCase
         $this->put(route('seo.update', 'home'), ['meta_title' => 'Custom home', 'robots_index' => 'noindex'])->assertSessionHasNoErrors();
         $this->get(route('home'))->assertSee('>Custom home - '.config('app.name').'</title>', false)->assertSee('name="robots" content="noindex, follow"', false);
         $this->put(route('seo.update', 'home'), ['meta_title' => '', 'robots_index' => ''])->assertSessionHasNoErrors();
-        $this->get(route('home'))->assertSee('>Noël Secret - '.config('app.name').'</title>', false)->assertSee('name="robots" content="all"', false);
+        $this->get(route('home'))->assertSee('>Secret Santa en famille - '.config('app.name').'</title>', false)->assertSee('name="robots" content="all"', false);
     }
 
     public function test_page_overrides_render_single_tags_without_changing_content_and_can_be_reset(): void

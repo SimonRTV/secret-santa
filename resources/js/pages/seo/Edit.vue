@@ -675,8 +675,7 @@ const sections = computed<
                 >
                     <p
                         :class="{
-                            'text-amber-700':
-                                !isIndexable || !isPublished,
+                            'text-amber-700': !isIndexable || !isPublished,
                         }"
                     >
                         {{

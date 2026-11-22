@@ -59,7 +59,7 @@ HELP;
 
     public function handle(Filesystem $files): int
     {
-        $name = (string) $this->argument('name');
+        $name = $this->stringInput($this->argument('name')) ?? '';
         if (! preg_match('/^[A-Z][A-Za-z0-9]{0,63}$/', $name) || Str::singular($name) !== $name) {
             $this->error('Use a singular PascalCase name, for example Project or ProjectNote.');
 
@@ -79,13 +79,13 @@ HELP;
         $plural = Str::pluralStudly($name);
         $route = Str::kebab($plural);
         $table = Str::snake($plural);
-        $label = $this->option('label') ?? Str::headline($plural);
+        $label = $this->stringInput($this->option('label')) ?? Str::headline($plural);
         if (! preg_match('/^[\p{L}\p{N}][\p{L}\p{N} _-]{0,79}$/u', $label)) {
             $this->error('The label must contain 1–80 letters, numbers, spaces, underscores, or hyphens.');
 
             return self::FAILURE;
         }
-        $stubDirectory = $this->option('stubs');
+        $stubDirectory = $this->stringInput($this->option('stubs'));
         if ($stubDirectory !== null && ! $files->isDirectory($stubDirectory)) {
             $this->error('The custom stub directory does not exist.');
 
@@ -199,5 +199,13 @@ HELP;
         $this->line('npm run build');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Console input is untyped; only plain strings are accepted as values.
+     */
+    private function stringInput(mixed $value): ?string
+    {
+        return is_string($value) ? $value : null;
     }
 }
