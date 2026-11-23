@@ -2,6 +2,7 @@
 import { router } from '@inertiajs/vue3';
 import { Gift, Link2 } from '@lucide/vue';
 import { computed, ref, watch } from 'vue';
+import EmailNoticeForm from '@/components/exchange/EmailNoticeForm.vue';
 import SealedEnvelope from '@/components/exchange/SealedEnvelope.vue';
 import ShareLinkDialog from '@/components/exchange/ShareLinkDialog.vue';
 import WishListEditor from '@/components/exchange/WishListEditor.vue';
@@ -18,7 +19,12 @@ const props = defineProps<{
         exchangeOn: string | null;
         drawn: boolean;
     };
-    person: { id: string; name: string; wishes: string | null };
+    person: {
+        id: string;
+        name: string;
+        email: string | null;
+        wishes: string | null;
+    };
     recipient: { name: string; wishes: string[] } | null;
 }>();
 
@@ -191,6 +197,24 @@ watch(
                 Votre lutin mystère les découvrira avec votre nom.
             </p>
             <WishListEditor :member-id="person.id" :wishes="person.wishes" />
+        </section>
+
+        <section
+            aria-labelledby="notice-heading"
+            class="paper-card mt-5 px-5 pt-6 pb-5 sm:px-8"
+        >
+            <h2
+                id="notice-heading"
+                class="holiday-serif text-[1.7rem] leading-tight font-semibold"
+            >
+                Me prévenir par e-mail
+            </h2>
+            <p class="mt-1 mb-5 text-[var(--ink-muted)]">
+                Recevez un message quand la personne que vous gâtez ajoute des
+                idées à sa liste. Votre adresse n’apparaît que sur cette page,
+                jamais dans la liste des participants.
+            </p>
+            <EmailNoticeForm :member-id="person.id" :email="person.email" />
         </section>
 
         <aside

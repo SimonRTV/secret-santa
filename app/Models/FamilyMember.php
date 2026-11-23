@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'wishes'])]
+#[Fillable(['name', 'email', 'wishes'])]
 class FamilyMember extends Model
 {
     /** @use HasFactory<FamilyMemberFactory> */
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, Notifiable;
 
     public function newUniqueId(): string
     {

@@ -57,6 +57,7 @@ Route::withHead(robots: 'none')->middleware([EnsureFeatureEnabled::class.':start
     Route::delete('familles/{family}/tirage', [FamilyDrawController::class, 'destroy'])->middleware('throttle:exchange-draw')->name('families.draw.destroy');
     Route::get('invitations/{member}', [InvitationController::class, 'show'])->name('members.show');
     Route::patch('invitations/{member}', [InvitationController::class, 'update'])->middleware('throttle:invitation')->name('members.update');
+    Route::patch('invitations/{member}/email', [InvitationController::class, 'updateEmail'])->middleware('throttle:invitation')->name('members.email.update');
     Route::post('invitations/{member}/enveloppe', [InvitationController::class, 'reveal'])->middleware('throttle:invitation')->name('members.reveal');
 });
 Route::get('content/{page:slug}', PublicPageController::class)

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Families\AnnounceNewGiftIdeas;
 use App\Actions\Families\BrowserExchanges;
+use App\Http\Requests\UpdateInvitationEmailRequest;
 use App\Http\Requests\UpdateWishesRequest;
 use App\Models\FamilyMember;
 use Illuminate\Http\RedirectResponse;
@@ -26,16 +28,31 @@ class InvitationController extends Controller
                 'exchangeOn' => $family->exchange_on?->toDateString(),
                 'drawn' => $family->isDrawn(),
             ],
-            'person' => $member->only('id', 'name', 'wishes'),
+            'person' => $member->only('id', 'name', 'email', 'wishes'),
             'recipient' => $revealed && $member->recipient
                 ? ['name' => $member->recipient->name, 'wishes' => $member->recipient->wishList()]
                 : null,
         ]);
     }
 
-    public function update(UpdateWishesRequest $request, FamilyMember $member): RedirectResponse
+    public function update(UpdateWishesRequest $request, FamilyMember $member, AnnounceNewGiftIdeas $announce): RedirectResponse
     {
+        $previousWishes = $member->wishList();
         $member->update(['wishes' => $request->wishes()]);
+        $announce->handle($member, $previousWishes);
+
+        return to_route('members.show', $member);
+    }
+
+    /**
+     * Save, or remove, the address that hears about new gift ideas.
+     */
+    public function updateEmail(UpdateInvitationEmailRequest $request, FamilyMember $member): RedirectResponse
+    {
+        $member->update(['email' => $request->email()]);
+        Inertia::flash('toast', ['type' => 'success', 'message' => $member->email
+            ? 'C’est noté : vous recevrez un e-mail quand de nouvelles idées arrivent.'
+            : 'Votre adresse e-mail a été retirée.']);
 
         return to_route('members.show', $member);
     }
